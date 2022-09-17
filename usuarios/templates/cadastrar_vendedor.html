@@ -11,6 +11,12 @@
         {% endif %}
         <form action="{% url 'cadastrar_vendedor' %}" method="POST">{% csrf_token %}
             <br>
+            <label>Nome:</label>
+            <input type="text" placeholder="Digite seu Nome..." name="nome" class="form-control">
+            <br>
+            <label>Sobrenome:</label>
+            <input type="text" placeholder="Digite seu Sobrenome..." name="sobrenome" class="form-control">
+            <br>
             <label>E-mail</label>
             <input type="email" placeholder="Digite seu E-mail..." name="email" class="form-control">
             <br>

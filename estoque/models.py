@@ -24,3 +24,7 @@ class Produto(models.Model):
         lucro = self.preco_venda - self.preco_compra
         return (lucro * 100) / self.preco_compra
     
+
+class Imagem(models.Model):
+    imagem = models.ImageField(upload_to="imagem_produto")
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load filters %}
+
+
+{% block 'body' %}
+<div class="container">
+
+    {% if messages %}
+        <br>
+        {% for message in messages%}
+            <div class="alert {{message.tags}}">{{message}}</div>
+        {% endfor%}
+    {% endif %}
+    <form action="{% url 'add_produto' %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+        <br>
+        <label>Imagens:</label>
+        <input class="form-control" type="file" name="imagens" multiple>
+        <br>
+        <br>
+
+        <label>Nome:</label>
+        <input  class="form-control" type="text" name="nome">
+
+        <br>
+        <br>
+
+        <label>Selecione a categoria do produto</label>
+        <select  class="form-control" name="categoria">
+            {% for categoria in categorias %}
+                <option value="{{categoria.id}}">{{categoria.titulo}}</option>
+            {% endfor %}
+            
+        </select>
+
+        <br>
+        <br>
+
+        <label>Estoque inicial:</label>
+        <input class="form-control" type="number" name="quantidade">
+
+        <br>
+        <br>
+
+        <label>Preço de compra:</label>
+        <input class="form-control" type="number" name="preco_compra">
+
+        <br>
+        <br>
+
+        <label>Preço de venda:</label>
+        <input class="form-control" type="number" name="preco_venda">
+
+        <br>
+        <br>
+
+        <input class="btn btn-success" type="submit" value="Enviar">
+
+    </form>
+    <hr style="background-color: gray;">
+
+    <div class="listar_produtos">
+        {% for produto in produtos %}
+            <div style="background-color: #0f0f0f;" class="card" style="width: 18rem;">
+               {% if produto|get_first_image %}
+                <img width="100%" class="card-img-top" src="{{produto|get_first_image}}">
+               {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{produto.nome}}</h5>
+                    <span class="badge badge-info">{{produto.categoria}}</span>
+                    <br>
+                    <br>
+                    <a href="#" class="btn btn-primary">Acessar</a>
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}
