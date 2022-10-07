@@ -57,7 +57,38 @@
 
     </form>
     <hr style="background-color: gray;">
+    <form action="{% url 'add_produto' %}" method="GET">
+        <div class="row">
+            <div class="col-md">
+                <input class="form-control" type="text" name="nome" placeholder="Nome...">
+            </div>
 
+            <div class="col-md">
+                <select class="form-control" name="categoria">
+                    <option value="">Todas as categorias</option>
+                    {% for categoria in categorias %}
+                        <option value="{{categoria.id}}">{{categoria.titulo}}</option>
+                    {% endfor %}
+                    
+                </select>
+            </div>
+
+            <div class="col-md">
+                <input class="form-control" type="number" name="preco_min" placeholder="Preço mínimo">
+            </div>
+
+            <div class="col-md">
+                <input class="form-control" type="number" name="preco_max" placeholder="Preço máximo">
+            </div>
+
+            <div class="col-md">
+                <input type="submit" value="Filtrar" class="btn btn-success">
+                
+            </div>
+            
+        </div>
+        
+    </form>
     <div class="listar_produtos">
         <div class="row"> 
         {% for produto in produtos %}
