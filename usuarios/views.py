@@ -1,21 +1,22 @@
-from curses.ascii import HT
-import imp
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from rolepermissions.decorators  import has_permission_decorator
-from .models import Users
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib import auth
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from rolepermissions.decorators  import has_permission_decorator
+
+from .models import Users
+
 
 @has_permission_decorator('cadastrar_vendedor')
-def cadastrar_vendedor(request):
+def cadastrar_vendedor(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         vendedores = Users.objects.filter(cargo="V")
         return render(request, 'cadastrar_vendedor.html', {'vendedores': vendedores})
-    if request.method == "POST":
+
+    elif request.method == "POST":
         nome = request.POST.get('nome')
         sobrenome = request.POST.get('sobrenome')
         email = request.POST.get('email')
@@ -29,21 +30,27 @@ def cadastrar_vendedor(request):
             # TODO: Utilizar messages do Django
             return HttpResponse('Email já existe')
 
-        user = Users.objects.create_user(username=email,
-                                            email=email,
-                                            password=senha,
-                                            first_name=nome,
-                                            last_name=sobrenome,
-                                            cargo="V")
+        user = Users.objects.create_user(
+            username=email,
+            email=email,
+            password=senha,
+            first_name=nome,
+             last_name=sobrenome,
+            cargo="V"
+        )
 
         # TODO: Redirecionar com uma mensagem
         return HttpResponse('Conta criada')
 
-def login(request):
+
+def login(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     if request.method == "GET":
         if request.user.is_authenticated:
             return redirect(reverse('plataforma'))
+
         return render(request, 'login.html')
+
+
     elif request.method == "POST":
         login = request.POST.get('email')
         senha = request.POST.get('senha')
@@ -57,14 +64,16 @@ def login(request):
         auth.login(request, user)
         return HttpResponse('Usuario logado com sucesso')
 
-def logout(request):
+
+def logout(request: HttpRequest) -> HttpResponseRedirect:
     request.session.flush()
     return redirect(reverse('login'))
 
+
 @has_permission_decorator('cadastrar_vendedor')
-def excluir_usuario(request, id):
-    vendedor = get_object_or_404(Users, id=id)
+def excluir_usuario(request: HttpResponse, user_id: str) -> HttpResponseRedirect:
+    vendedor = get_object_or_404(Users, id=user_id)
     vendedor.delete()
     messages.add_message(request, messages.SUCCESS, 'Vendedor excluid com sucesso')
-    return redirect(reverse('cadastrar_vendedor'))
 
+    return redirect(reverse('cadastrar_vendedor'))
