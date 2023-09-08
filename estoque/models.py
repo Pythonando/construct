@@ -1,11 +1,13 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 
+
 class Categoria(models.Model):
     titulo = models.CharField(max_length=40)
 
     def __str__(self):
         return self.titulo
+
 
 class Produto(models.Model):
     nome = models.CharField(max_length=40, unique=True)
@@ -24,15 +26,13 @@ class Produto(models.Model):
 
         return super().save(*args, **kwargs)
 
-
-
-    def gerar_desconto(self, desconto):
+    def gerar_desconto(self, desconto: int) -> int:
         return self.preco_venda - ((self.preco_venda * desconto) / 100)
 
-    def lucro(self):
+    def lucro(self) -> int:
         lucro = self.preco_venda - self.preco_compra
         return (lucro * 100) / self.preco_compra
-    
+
 
 class Imagem(models.Model):
     imagem = models.ImageField(upload_to="imagem_produto")
